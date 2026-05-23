@@ -1,4 +1,6 @@
 import allure
+from data.expected_messages import INCORRECT_CREDENTIALS_MSG
+from data.user_data import INVALID_EMAIL, INVALID_PASSWORD
 
 @allure.title("Авторизация пользователя")
 class TestLoginUser:
@@ -16,7 +18,7 @@ class TestLoginUser:
     @allure.step("Ошибка авторизации с неверным логином и паролем")
     def test_login_with_incorrect_credentials_unauthorized(self, user_client):
 
-        response = user_client.login_user("wrong_email_user_998@yandex.ru", "wrong_password_123")
+        response = user_client.login_user(INVALID_EMAIL, INVALID_PASSWORD)
         
         assert response.status_code == 401
-        assert response.json().get("message") == "email or password are incorrect"
+        assert response.json().get("message") == INCORRECT_CREDENTIALS_MSG

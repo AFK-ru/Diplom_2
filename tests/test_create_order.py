@@ -1,4 +1,5 @@
 import allure
+from data.expected_messages import MISSING_INGREDIENTS_MSG, INTERNAL_SERVER_ERROR_MSG
 
 @allure.title("Создание заказа")
 class TestCreateOrder:
@@ -49,7 +50,7 @@ class TestCreateOrder:
         response = order_client.create_order(ingredient_ids=[])
         
         assert response.status_code == 400
-        assert response.json().get("message") == "Ingredient ids must be provided"
+        assert response.json().get("message") == MISSING_INGREDIENTS_MSG
 
 
     @allure.step("Ошибка создания заказа с неверным хешем ингредиентов")
@@ -58,4 +59,4 @@ class TestCreateOrder:
         response = order_client.create_order(ingredient_ids=["invalid_hash_123"])
         
         assert response.status_code == 500
-        assert "Internal Server Error" in response.text
+        assert INTERNAL_SERVER_ERROR_MSG in response.text

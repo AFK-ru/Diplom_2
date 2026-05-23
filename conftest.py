@@ -33,3 +33,16 @@ def created_user(user_client):
     
     if token:
         user_client.delete_user(token)
+
+
+@pytest.fixture
+def register_and_delete_user(user_client):
+
+    user_payload = generate_user_data()
+    yield user_payload
+    
+    login_resp = user_client.login_user(user_payload["email"], user_payload["password"])
+    if login_resp.status_code == 200:
+        token = login_resp.json().get("accessToken")
+        if token:
+            user_client.delete_user(token)

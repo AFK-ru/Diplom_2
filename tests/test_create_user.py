@@ -1,13 +1,14 @@
 import pytest
 import allure
+from data.expected_messages import USER_EXISTS_MSG, REQUIRED_FIELDS_MSG
 
 @allure.title("Создание пользователя")
 class TestCreateUser:
 
     @allure.step("Успешное создание уникального пользователя")
-    def test_create_unique_user_success(self, user_client, unique_user_data):
+    def test_create_unique_user_success(self, user_client, register_and_delete_user):
 
-        response = user_client.register_user(unique_user_data)
+        response = user_client.register_user(register_and_delete_user)
         
         assert response.status_code == 200
         assert response.json().get("success") is True
@@ -20,7 +21,7 @@ class TestCreateUser:
         response = user_client.register_user(existing_user_payload)
         
         assert response.status_code == 403
-        assert response.json().get("message") == "User already exists"
+        assert response.json().get("message") == USER_EXISTS_MSG
 
 
     @allure.step("Ошибка при создании пользователя без обязательного поля")
@@ -31,4 +32,4 @@ class TestCreateUser:
         response = user_client.register_user(unique_user_data)
         
         assert response.status_code == 403
-        assert response.json().get("message") == "Email, password and name are required fields"
+        assert response.json().get("message") == REQUIRED_FIELDS_MSG
